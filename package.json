@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "Export to PDF",
   "author": "Thinh Pham",
-  "main": "app.js",
+  "main": "export.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node export.js"
   },
   "dependencies": {
     "assert": "^1.4.1",
