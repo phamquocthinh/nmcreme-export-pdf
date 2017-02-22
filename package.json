@@ -1,0 +1,17 @@
+{
+  "name": "export-to-pdf",
+  "version": "0.1.0",
+  "description": "Export to PDF",
+  "author": "Thinh Pham",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "assert": "^1.4.1",
+    "bluebird": "^3.4.7",
+    "commander": "^2.9.0",
+    "mongodb": "^2.2.24",
+    "pdfkit": "^0.8.0"
+  }
+}
