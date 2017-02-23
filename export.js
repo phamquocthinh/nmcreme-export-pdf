@@ -105,7 +105,7 @@ const makePDF = (PDFDocument, doc) => {
 }
 
 const print = (docs) => {
-    let docsToPrint = docs.splice(0, 100);
+    let docsToPrint = docs.splice(0, 49);
     console.log('=== Starting export %s docs ===', docsToPrint.length);
 
     return Promise.each(docsToPrint, (doc, index) => {
@@ -137,15 +137,16 @@ const execute = () => {
 
             return print(docs);
         })
+        .then(() => {
+            console.log('Finished');
+            console.log('Exit after 5 minutes...')
+
+            setTimeout(() => {
+                process.exit();
+            }, 5 * 60 * 1000)
+        }).catch((error) => {
+            console.log(error);
+        })
 }
 
-execute().then(() => {
-    console.log('Finished');
-    console.log('Exit after 5 minutes...')
-
-    setTimeout(() => {
-        process.exit();
-    }, 5 * 60 * 1000)
-}).catch((error) => {
-    console.log(error);
-})
+execute()
