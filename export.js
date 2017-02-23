@@ -7,58 +7,40 @@ const moment = require('moment');
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
-// Connection URL 
 const url = 'mongodb://localhost:27017/nmcreme';
 const imageDirectory = '/home/niveacreme/NW/public';
+const batch = 10;
 
-let query = [{ _id: { $exists: true } }];
-let condition = { $and: query };
+let condition = {};
 
 program
     .version('0.0.1')
-    .option('-f --from <n>', 'from number of _id', parseInt)
-    .option('-t --to <n>', 'to number of _id', parseInt)
+    .option('-f --from <n>', 'from _id', parseInt)
     .option('-i --id <s>', 'number of _id, each _id separated by commas')
     .option('-d --date <d>', 'print on <date> only')
     .parse(process.argv);
 
-let fromId = program.from;
-let toId = program.to;
-let stringId = program.id;
+let fromId = program.from || 0;
 let date = program.date;
 
 if (fromId) {
-    console.log('Get docs from id: ', fromId);
-    query.push({ _id: { $gte: fromId } });
-}
-
-if (toId) {
-    console.log('Get docs to id: ', toId);
-    query.push({ _id: { $lte: toId } });
-}
-
-if (stringId) {
-    let arrIds = stringId.split(',').map((id) => {
-        return parseInt(id.trim());
-    });
-
-    console.log('Get docs from id of: ', arrIds);
-    query.push({ _id: { $in: arrIds } });
+    console.log('Get docs from _id: ', fromId);
+    condition['_id'] = { $gte: fromId };
 }
 
 if (date) {
     let stringDate = moment(date).format('ddd MMM DD YYYY');
 
     console.log('Get docs on date: ', stringDate);
-    query.push({ time: { $regex: stringDate } });
+    condition['time'] = { $regex: stringDate };
 }
 
-const findDocs = (condition) => {
+const findDocs = (condition, batch) => {
     return new Promise((resolve, reject) => {
         MongoClient.connect(url, (err, db) => {
             assert.equal(null, err);
 
-            db.collection('datas').find(condition).sort({ _id: 1 }).toArray((err, docs) => {
+            db.collection('datas').find(condition).sort({ _id: 1 }).limit(batch).toArray((err, docs) => {
                 resolve(docs);
             })
         });
@@ -105,46 +87,44 @@ const makePDF = (PDFDocument, doc) => {
 }
 
 const print = (docs) => {
-    let docsToPrint = docs.splice(0, 49);
-    console.log('=== Starting export %s docs ===', docsToPrint.length);
+    console.log('=== Starting export %s docs ===', docs.length);
 
-    return Promise.each(docsToPrint, (doc, index) => {
+    return Promise.each(docs, (doc, index) => {
         return makePDF(PDFDocument, doc)
             .then(() => {
                 console.log('%s docs left...', docs.length - index -1);
             })
-    }).then(() => {
-        if (!docs.length) {
-            return Promise.resolve();
-        }
-
-        setTimeout(() => {
-            return print(docs);
-        }, 30000)
     })
 }
 
 const execute = () => {
-    return findDocs(condition)
+    return findDocs(condition, batch)
         .then((docs) => {
             if (!docs.length) {
                 console.log('No more docs to process...');
+                console.log('===FINISHED===');
+                console.log('===EXIT AFTER 5 MINUTES===');
 
-                return Promise.resolve();
+                setTimeout(() => {
+                    return process.exit();
+                })
             }
 
-            console.log('Found total %s docs', docs.length);
+            fromId = docs[docs.length - 1]._id;
+            condition['_id'] = { $gt: fromId };
 
-            return print(docs);
+            console.log('===FOUND %s DOCS===', docs.length);
+
+            return print(docs)
+                .then(() => {
+                    console.log('Wait for 60s for next round');
+                    console.log('Getting docs from _id: ', fromId);
+                    setTimeout(() => {
+                        return execute();
+                    }, 20000)
+                })
         })
-        .then(() => {
-            console.log('Finished');
-            console.log('Exit after 5 minutes...')
-
-            setTimeout(() => {
-                process.exit();
-            }, 5 * 60 * 1000)
-        }).catch((error) => {
+        .catch((error) => {
             console.log(error);
         })
 }
