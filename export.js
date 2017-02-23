@@ -83,7 +83,7 @@ const print = (docs) => {
         console.log('%s docs left...', docs.length - index -1);
 
         setTimeout(() => {
-            resolve();
+            return;
         }, 100)
     })
 }
