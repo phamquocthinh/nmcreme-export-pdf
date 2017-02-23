@@ -98,17 +98,28 @@ const makePDF = (PDFDocument, doc) => {
         pdfDoc.pipe(fs.createWriteStream(fileName));
 
         pdfDoc.end();
+
         resolve();
     })
     
 }
 
 const print = (docs) => {
-    return Promise.each(docs, (doc, index) => {
+    let docsToPrint = docs.splice(0, 100);
+
+    return Promise.each(docsToPrint, (doc, index) => {
         return makePDF(PDFDocument, doc)
             .then(() => {
                 console.log('%s docs left...', docs.length - index -1);
             })
+    }).then(() => {
+        if (docs.length <= 0) {
+            return print(docs);
+        }
+
+        setTimeout(() => {
+            return Promise.resolve()
+        }, 30000)
     })
 }
 
