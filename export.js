@@ -28,10 +28,12 @@ let stringId = program.id;
 let date = program.date;
 
 if (fromId) {
+    console.log('Get docs from id: ', fromId);
     query.push({ _id: { $gte: fromId } });
 }
 
 if (toId) {
+    console.log('Get docs to id: ', toId);
     query.push({ _id: { $lte: toId } });
 }
 
@@ -40,12 +42,14 @@ if (stringId) {
         return parseInt(id.trim());
     });
 
+    console.log('Get docs from id of: ', arrIds);
     query.push({ _id: { $in: arrIds } });
 }
 
 if (date) {
     let stringDate = moment(date).format('ddd MMM DD YYYY');
 
+    console.log('Get docs on date: ', stringDate);
     query.push({ time: { $regex: stringDate } });
 }
 
