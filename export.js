@@ -97,6 +97,12 @@ const print = (docs) => {
     })
 }
 
+const exitProcess = () => {
+    setTimeout(() => {
+        process.exit()
+    }, 300000);
+}
+
 const execute = () => {
     return findDocs(condition, batch)
         .then((docs) => {
@@ -105,9 +111,7 @@ const execute = () => {
                 console.log('===FINISHED===');
                 console.log('===EXIT AFTER 5 MINUTES===');
 
-                setTimeout(() => {
-                    return process.exit();
-                })
+                return exitProcess()
             }
 
             fromId = docs[docs.length - 1]._id;
