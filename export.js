@@ -2,6 +2,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const Promise = require('bluebird');
 const program = require('commander');
+const _ = require('lodash');
 
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
@@ -17,10 +18,12 @@ program
     .version('0.0.1')
     .option('-f --from <n>', 'from number of _id', parseInt)
     .option('-t --to <n>', 'to number of _id', parseInt)
+    .option('-i --id <s>', 'number of _id, each _id separated by commas', parseInt)
     .parse(process.argv);
 
 const fromId = program.from;
 const toId = program.to;
+const stringId = program.id;
 
 if (fromId) {
     query.push({ _id: { $gte: fromId } });
@@ -28,6 +31,16 @@ if (fromId) {
 
 if (toId) {
     query.push({ _id: { $lte: toId } });
+}
+
+if (stringId) {
+    const arrIds = stringId.split(',');
+
+    arrIds = _.map(arrIds, (id) => {
+        return parseInt(id.trim());
+    });
+
+    query = { _id: { $in: arrIds } };
 }
 
 const findDocs = (condition) => {
