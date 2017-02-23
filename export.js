@@ -10,8 +10,8 @@ const assert = require('assert');
 const url = 'mongodb://localhost:27017/nmcreme';
 const imageDirectory = '/home/niveacreme/NW/public';
 
-const query = [{ _id: { $exists: true } }];
-const condition = { $and: query };
+let query = [{ _id: { $exists: true } }];
+let condition = { $and: query };
 
 program
     .version('0.0.1')
@@ -20,9 +20,9 @@ program
     .option('-i --id <s>', 'number of _id, each _id separated by commas')
     .parse(process.argv);
 
-const fromId = program.from;
-const toId = program.to;
-const stringId = program.id;
+let fromId = program.from;
+let toId = program.to;
+let stringId = program.id;
 
 if (fromId) {
     query.push({ _id: { $gte: fromId } });
