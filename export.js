@@ -70,7 +70,7 @@ const makePDF = (PDFDocument, docs) => {
                     pdfDoc.image(imageDirectory + doc.url, 200, 200, { width: 945, height: 945 });
                     pdfDoc.image('images/1.png', 200, 200, { width: 945, height: 945 });
                     pdfDoc.image('images/2.png', 222, 222, { width: 900, height: 900 });
-                    pdfDoc.image('images/2.png', 1245, 200, { width: 945, height: 945 });
+                    pdfDoc.image('images/3.png', 1245, 200, { width: 945, height: 945 });
                     pdfDoc.font('fonts/times.ttf').fontSize(80).text(string1, 1330, 400, { width: 800, height: 800, align: 'center' });
                 } catch (err) {
                     console.log(err);
@@ -86,7 +86,7 @@ const makePDF = (PDFDocument, docs) => {
                     pdfDoc.image(imageDirectory + doc.url, 200, 1245, { width: 945, height: 945 });
                     pdfDoc.image('images/1.png', 200, 1245, { width: 945, height: 945 });
                     pdfDoc.image('images/2.png', 222, 1267, { width: 900, height: 900 });
-                    pdfDoc.image('images/2.png', 1245, 1245, { width: 945, height: 945 });
+                    pdfDoc.image('images/3.png', 1245, 1245, { width: 945, height: 945 });
                     pdfDoc.font('fonts/times.ttf').fontSize(80).text(string2, 1330, 1445, { width: 800, height: 800, align: 'center' });
                 } catch (err) {
                     console.log(err);
@@ -102,7 +102,7 @@ const makePDF = (PDFDocument, docs) => {
                     pdfDoc.image(imageDirectory + doc.url, 200, 2290, { width: 945, height: 945 });
                     pdfDoc.image('images/1.png', 200, 2290, { width: 945, height: 945 });
                     pdfDoc.image('images/2.png', 222, 2312, { width: 900, height: 900 });
-                    pdfDoc.image('images/2.png', 1245, 2290, { width: 945, height: 945 });
+                    pdfDoc.image('images/3.png', 1245, 2290, { width: 945, height: 945 });
                     pdfDoc.font('fonts/times.ttf').fontSize(80).text(string3, 1330, 2490, { width: 800, height: 800, align: 'center' });
                 } catch (err) {
                     console.log(err);
