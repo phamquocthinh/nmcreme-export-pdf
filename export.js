@@ -18,7 +18,7 @@ program
     .version('0.0.1')
     .option('-f --from <n>', 'from number of _id', parseInt)
     .option('-t --to <n>', 'to number of _id', parseInt)
-    .option('-i --id <s>', 'number of _id, each _id separated by commas', parseInt)
+    .option('-i --id <s>', 'number of _id, each _id separated by commas')
     .parse(process.argv);
 
 const fromId = program.from;
