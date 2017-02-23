@@ -76,38 +76,39 @@ const cleanText = (string) => {
 }
 
 const makePDF = (PDFDocument, doc) => {
-    let pdfDoc = new PDFDocument({
-        size: [2480, 3508]
-    });
+    return new Promise((resolve, reject) => {
+        let pdfDoc = new PDFDocument({
+            size: [2480, 3508]
+        });
 
-    let fileName = 'pdf/' + doc._id + '.pdf';
-    let string = cleanText(doc._id + '_' + doc.name + '_' + doc.address);
+        let fileName = 'pdf/' + doc._id + '.pdf';
+        let string = cleanText(doc._id + '_' + doc.name + '_' + doc.address);
 
-    try {
-        pdfDoc.image(imageDirectory + doc.url, 200, 200, { width: 945, height: 945 });
-    } catch (err) {
-        console.log('Can not found image directory for doc: %s', doc._id);
-    }
+        try {
+            pdfDoc.image(imageDirectory + doc.url, 200, 200, { width: 945, height: 945 });
+        } catch (err) {
+            console.log('Can not found image directory for doc: %s', doc._id);
+        }
 
-    pdfDoc.image('images/1.png', 200, 200, { width: 945, height: 945 });
-    pdfDoc.image('images/2.png', 222, 222, { width: 900, height: 900 });
-    pdfDoc.image('images/3.png', 1245, 200, { width: 945, height: 945 });
-    pdfDoc.font('fonts/times.ttf').fontSize(80).text(string, 1330, 400, { width: 800, height: 800, align: 'center' });
+        pdfDoc.image('images/1.png', 200, 200, { width: 945, height: 945 });
+        pdfDoc.image('images/2.png', 222, 222, { width: 900, height: 900 });
+        pdfDoc.image('images/3.png', 1245, 200, { width: 945, height: 945 });
+        pdfDoc.font('fonts/times.ttf').fontSize(80).text(string, 1330, 400, { width: 800, height: 800, align: 'center' });
 
-    pdfDoc.pipe(fs.createWriteStream(fileName));
+        pdfDoc.pipe(fs.createWriteStream(fileName));
 
-    pdfDoc.end();
+        pdfDoc.end();
+        resolve();
+    })
+    
 }
 
 const print = (docs) => {
     return Promise.each(docs, (doc, index) => {
-        makePDF(PDFDocument, doc);
-
-        console.log('%s docs left...', docs.length - index -1);
-
-        setTimeout(() => {
-            return;
-        }, 100)
+        return makePDF(PDFDocument, doc)
+            .then(() => {
+                console.log('%s docs left...', docs.length - index -1);
+            })
     })
 }
 
@@ -133,4 +134,6 @@ execute().then(() => {
     setTimeout(() => {
         process.exit();
     }, 5 * 60 * 1000)
+}).catch((error) => {
+    console.log(error);
 })
