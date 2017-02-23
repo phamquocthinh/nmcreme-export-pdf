@@ -106,6 +106,7 @@ const makePDF = (PDFDocument, doc) => {
 
 const print = (docs) => {
     let docsToPrint = docs.splice(0, 100);
+    console.log('=== Starting export %s docs ===', docsToPrint.length);
 
     return Promise.each(docsToPrint, (doc, index) => {
         return makePDF(PDFDocument, doc)
@@ -113,7 +114,7 @@ const print = (docs) => {
                 console.log('%s docs left...', docs.length - index -1);
             })
     }).then(() => {
-        if (docs.length <= 0) {
+        if (docs.length) {
             return print(docs);
         }
 
