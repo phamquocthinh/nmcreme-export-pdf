@@ -37,7 +37,7 @@ if (stringId) {
         return parseInt(id.trim());
     });
 
-    query = { _id: { $in: arrIds } };
+    query.push({ _id: { $in: arrIds } });
 }
 
 const findDocs = (condition) => {
