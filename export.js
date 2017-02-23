@@ -114,12 +114,12 @@ const print = (docs) => {
                 console.log('%s docs left...', docs.length - index -1);
             })
     }).then(() => {
-        if (docs.length) {
-            return print(docs);
+        if (!docs.length) {
+            return Promise.resolve();
         }
 
         setTimeout(() => {
-            return Promise.resolve()
+            return print(docs);
         }, 30000)
     })
 }
