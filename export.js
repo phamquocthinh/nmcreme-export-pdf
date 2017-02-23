@@ -2,6 +2,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const Promise = require('bluebird');
 const program = require('commander');
+const moment = require('moment');
 
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
@@ -18,11 +19,13 @@ program
     .option('-f --from <n>', 'from number of _id', parseInt)
     .option('-t --to <n>', 'to number of _id', parseInt)
     .option('-i --id <s>', 'number of _id, each _id separated by commas')
+    .option('-d --date <d>', 'print on <date> only')
     .parse(process.argv);
 
 let fromId = program.from;
 let toId = program.to;
 let stringId = program.id;
+let date = program.date;
 
 if (fromId) {
     query.push({ _id: { $gte: fromId } });
@@ -38,6 +41,12 @@ if (stringId) {
     });
 
     query.push({ _id: { $in: arrIds } });
+}
+
+if (date) {
+    let stringDate = moment(date).toISOString().format('ddd MMM DD YYYY');
+
+    query.push({ time: { $regex: stringDate } });
 }
 
 const findDocs = (condition) => {
