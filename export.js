@@ -44,7 +44,7 @@ if (stringId) {
 }
 
 if (date) {
-    let stringDate = moment(date).toISOString().format('ddd MMM DD YYYY');
+    let stringDate = moment(date).format('ddd MMM DD YYYY');
 
     query.push({ time: { $regex: stringDate } });
 }
