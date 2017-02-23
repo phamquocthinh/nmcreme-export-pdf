@@ -2,7 +2,6 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const Promise = require('bluebird');
 const program = require('commander');
-const _ = require('lodash');
 
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
@@ -34,9 +33,7 @@ if (toId) {
 }
 
 if (stringId) {
-    const arrIds = stringId.split(',');
-
-    arrIds = _.map(arrIds, (id) => {
+    let arrIds = stringId.split(',').map((id) => {
         return parseInt(id.trim());
     });
 
